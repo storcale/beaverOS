@@ -1,20 +1,31 @@
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
-$module = Get-ChildItem -Path 'C:\Users\' -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.FullName -match '\\beaverOS_external\\Modules\\.*updater.psm1$' } | Select-Object -ExpandProperty FullName
+$module = Get-ChildItem -Path 'E:\' -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.FullName -match '\\beaverOS_external\\Modules\\.*updater.psm1$' } | Select-Object -ExpandProperty FullName
 Import-Module -Name $module -Force
 
 function uninstall(){
-    $old_profile_file = Get-ChildItem -Path 'C:\Users\' -Recurse -ErrorAction SilentlyContinue| Where-Object { $_.FullName -match '\\beaverOS_external\\Data\\.*old_profile.txt$' } | Select-Object -ExpandProperty FullName
+    $old_profile_file = Get-ChildItem -Path 'E:\' -Recurse -ErrorAction SilentlyContinue| Where-Object { $_.FullName -match '\\beaverOS_external\\Data\\.*old_profile.txt$' } | Select-Object -ExpandProperty FullName
 
     Copy-Item $old_profile_file -Destination $PROFILE
     Write-Host "Sucessfully removed beaverOS_external and mounted previous profile." -ForegroundColor Green
 }
 function install(){
  Write-Host "Importing beaverOS.. " -ForegroundColor Blue 
+ if(-Not (Test-Path -Path $PROFILE)){
+    $profileDir = Split-Path -Path $PROFILE
+    if(-Not (Test-Path -Path $profileDir)){
+        New-Item -Path $profileDir -ItemType Directory -Force
+    }
+    New-Item -Path $profileDir -ItemType File -Force
+    Write-Host "Profile script created at $PROFILE" -ForegroundColor Green 
+ }else{
+    Write-Host "Profile script already exists at $PROFILE"  -ForegroundColor Yellow
+ }
+ 
  Write-Host "Current profile path: " .. $PROFILE -ForegroundColor Blue
- $profile_file = Get-ChildItem -Path 'C:\Users\' -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.FullName -match '\\beaverOS_external\\Scripts\\.*beaverOS_profile.ps1$' } | Select-Object -ExpandProperty FullName
+ $profile_file = Get-ChildItem -Path 'E:\' -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.FullName -match '\\beaverOS_external\\Scripts\\.*beaverOS_profile.ps1$' } | Select-Object -ExpandProperty FullName
 
- $old_profile_file = Get-ChildItem -Path 'C:\Users\' -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.FullName -match '\\beaverOS_external\\Data\\.*old_profile.txt$' } | Select-Object -ExpandProperty FullName
+ $old_profile_file = Get-ChildItem -Path 'E:\' -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.FullName -match '\\beaverOS_external\\Data\\.*old_profile.txt$' } | Select-Object -ExpandProperty FullName
  # Backup profile
  $old_profile_content = Get-Content -Path $PROFILE
  Clear-Content -Path $old_profile_file
