@@ -49,8 +49,8 @@ function update(){
  # Backup file
  Write-Host "Saving backup..."
 
- $script =  Get-ChildItem -Path 'C:\Users\' -Recurse  -ErrorAction SilentlyContinue | Where-Object { $_.FullName -match '\\beaverOS_external\\Modules\\.*beaverOS_external.psm1$' }  | Select-Object -ExpandProperty FullName
- $backup_file = Get-ChildItem -Path 'C:\Users\' -Recurse  -ErrorAction SilentlyContinue | Where-Object { $_.FullName -match '\\beaverOS_external\\Data\\.*backup.txt$' } | Select-Object -ExpandProperty FullName
+ $script =  Get-ChildItem -Path 'E:\' -Recurse  -ErrorAction SilentlyContinue | Where-Object { $_.FullName -match '\\beaverOS_external\\Modules\\.*beaverOS_external.psm1$' }  | Select-Object -ExpandProperty FullName
+ $backup_file = Get-ChildItem -Path 'E:\' -Recurse  -ErrorAction SilentlyContinue | Where-Object { $_.FullName -match '\\beaverOS_external\\Data\\.*backup.txt$' } | Select-Object -ExpandProperty FullName
 
  $content = Get-Content $script
  Clear-Content -Path $backup_file
