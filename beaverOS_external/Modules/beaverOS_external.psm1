@@ -89,7 +89,29 @@ function login {
       }
     }
 }
+function gitLogin {
+    [CmdletBinding()]
+    param()
+    process {
+        $password_secure = Read-Host "Enter Password" -AsSecureString
+        $bstr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($password_secure);  
+        
 
+        Start-Process "https://github.com/login"
+        Start-Sleep -Seconds 1
 
+        function Send-Keys {
+            param (
+                 [string]$keys
+             )
 
-Export-ModuleMember -Function login
+         Add-Type -AssemblyName System.Windows.Forms
+        [System.Windows.Forms.SendKeys]::SendWait($keys)
+    }
+    Send-keys "Storcale{TAB}"
+    $password = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($bstr)
+    Send-Keys "$password{TAB}{TAB}{ENTER}"
+    }
+}
+
+Export-ModuleMember -Function login,gitLogin
