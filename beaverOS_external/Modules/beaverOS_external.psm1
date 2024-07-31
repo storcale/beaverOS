@@ -60,6 +60,22 @@ if ($result -eq [System.Windows.Forms.DialogResult]::OK)
 }
 
 
+# boot cmd ;)
+function boot {
+    [CmdletBinding()]
+   param()
+   process {
+    $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
+    $admin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+    if($admin -eq $true){
+    taskkill /F /IM WpcMon.exe | Out-Null
+    }elseif( $admin -eq $false){
+        start-process powershell -Verb RunAs -ArgumentList '-noexit -command "taskkill /F /IM WpcMon.exe | Out-Null"'
+    }
+}
+}
+
+
 # Login cmd
 function login {
     [CmdletBinding()]
