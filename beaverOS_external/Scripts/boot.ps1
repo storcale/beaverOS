@@ -1,7 +1,10 @@
 # Launch to manage beaverOS on the computer 
 
-
-$module = Get-ChildItem -Path 'E:\' -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.FullName -match '\\beaverOS_external\\Modules\\.*welcomeGUI_module.psm1$' } | Select-Object -ExpandProperty FullName
-Import-Module($module)
+$drive = Read-Host "What is the drive letter? "
+$env:beaverOS_drive = $drive + ":\"
+$scriptPath = $PSScriptRoot
+$module_path = Join-Path $scriptPath "..\Modules\manager.psm1"
+$module_path = [System.IO.Path]::GetFullPath($module_path)
+Import-Module($module_path)
 
 welcomeGUI

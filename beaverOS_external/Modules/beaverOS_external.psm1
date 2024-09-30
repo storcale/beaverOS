@@ -60,21 +60,17 @@ if ($result -eq [System.Windows.Forms.DialogResult]::OK)
 }
 
 
-# boot cmd ;)
-function boot {
+# GUI command
+function beaverOS {
     [CmdletBinding()]
-   param()
-   process {
-    $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
-    $admin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-    if($admin -eq $true){
-    taskkill /F /IM WpcMon.exe | Out-Null
-    }elseif( $admin -eq $false){
-        start-process powershell -Verb RunAs -ArgumentList '-noexit -command "taskkill /F /IM WpcMon.exe | Out-Null"'
+    param()
+    process {
+        $scriptPath = Get-Location
+        $boot_path = Join-Path $scriptPath "..\Scripts\boot.ps1"
+        $boot_path = [System.IO.Path]::GetFullPath($boot_path)
+        & $boot_path
     }
 }
-}
-
 
 # Login cmd
 function login {
@@ -105,10 +101,12 @@ function login {
       }
     }
 }
+
 function gitLogin {
     [CmdletBinding()]
     param()
     process {
+        $username = Read-Host "Enter Username"
         $password_secure = Read-Host "Enter Password" -AsSecureString
         $bstr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($password_secure);  
         
@@ -124,10 +122,10 @@ function gitLogin {
          Add-Type -AssemblyName System.Windows.Forms
         [System.Windows.Forms.SendKeys]::SendWait($keys)
     }
-    Send-keys "Storcale{TAB}"
+    Send-keys "$username{TAB}"
     $password = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($bstr)
     Send-Keys "$password{TAB}{TAB}{ENTER}"
     }
 }
 
-Export-ModuleMember -Function login,gitLogin
+Export-ModuleMember -Function login, beaverOS, gitLogin

@@ -1,5 +1,7 @@
 
 Add-Type -AssemblyName System.Windows.Forms
+$scriptPath = Get-Location
+
 
 $taskNumber = 3
 function finishTask{
@@ -49,18 +51,20 @@ function update(){
  # Backup file
  Write-Host "Saving backup..."
 
- $script =  Get-ChildItem -Path 'E:\' -Recurse  -ErrorAction SilentlyContinue | Where-Object { $_.FullName -match '\\beaverOS_external\\Modules\\.*beaverOS_external.psm1$' }  | Select-Object -ExpandProperty FullName
- $backup_file = Get-ChildItem -Path 'E:\' -Recurse  -ErrorAction SilentlyContinue | Where-Object { $_.FullName -match '\\beaverOS_external\\Data\\.*backup.txt$' } | Select-Object -ExpandProperty FullName
-
- $content = Get-Content $script
+ $module_path = Join-Path $scriptPath "..\Modules\beaverOS_external.psm1"
+ $module_path = [System.IO.Path]::GetFullPath($module_path)
+ 
+ $backup_file = Join-Path $scriptPath "..\Modules\updater.psm1"
+ $backup_file = [System.IO.Path]::GetFullPath($backup_file)
+ $content = Get-Content $module_path
  Clear-Content -Path $backup_file
  Add-Content -Path $backup_file -Value $content
  finishTask
 
  # Push update
  Write-Host "Pushing update to file..."
- Clear-Content $script
- Add-Content -Path $script -Value $update_code
+ Clear-Content $module_path
+ Add-Content -Path $module_path -Value $update_code
  finishTask
 
   Write-Host "Sucessfully updated beaverOS_external!" -ForegroundColor Green
