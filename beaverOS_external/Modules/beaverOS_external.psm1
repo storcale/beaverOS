@@ -65,9 +65,8 @@ function beaverOS {
     [CmdletBinding()]
     param()
     process {
-        $scriptPath = Get-Location
-        $boot_path = Join-Path $scriptPath "..\Scripts\boot.ps1"
-        $boot_path = [System.IO.Path]::GetFullPath($boot_path)
+        $projectRoot = (Get-Item -Path $PSScriptRoot).Parent.FullName
+        $boot_path = Join-Path -Path $projectRoot -ChildPath "Scripts\boot.ps1"
         & $boot_path
     }
 }

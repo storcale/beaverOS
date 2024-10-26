@@ -1,1 +1,1 @@
-Write-Host "hello world"
+Write-Host "Uh oh, seems like you did something wrong... Don't worry everything should be saved somewhere (I hope)"

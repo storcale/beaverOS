@@ -1,6 +1,8 @@
-$module_file = Get-ChildItem -Path '$env:beaverOS_drive' -Recurse -ErrorAction SilentlyContinue| Where-Object { $_.FullName -match '\\beaverOS_external\\Modules\\.*beaverOS_external.psm1$' } | Select-Object -ExpandProperty FullName
-
-Import-Module($module_file)
+$projectRoot = (Get-Item -Path $PSScriptRoot).Parent.FullName
+$module_path = Join-Path -Path $projectRoot -ChildPath "Modules\beaverOS_external.psm1"
+Import-Module($module_path)
+$utilities_path = Join-Path -Path $projectRoot -ChildPath "Modules\utilities.psm1"
+Import-Module($utilities_path)
 Write-Host("Welcome to Powershell! BeaverOS_external installed") -ForegroundColor Green
 
 

@@ -51,11 +51,10 @@ function update(){
  # Backup file
  Write-Host "Saving backup..."
 
- $module_path = Join-Path $scriptPath "..\Modules\beaverOS_external.psm1"
- $module_path = [System.IO.Path]::GetFullPath($module_path)
+ $projectRoot = (Get-Item -Path $PSScriptRoot).Parent.FullName
+ $module_path = Join-Path -Path $projectRoot -ChildPath "Modules\beaverOS_external.psm1"
  
- $backup_file = Join-Path $scriptPath "..\Modules\updater.psm1"
- $backup_file = [System.IO.Path]::GetFullPath($backup_file)
+ $backup_file = Join-Path -Path $projectRoot -ChildPath "Data\backup.txt"
  $content = Get-Content $module_path
  Clear-Content -Path $backup_file
  Add-Content -Path $backup_file -Value $content

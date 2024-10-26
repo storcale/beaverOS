@@ -1,6 +1,6 @@
 @{
     RootModule        = 'beaverOS_external.psm1'
-    ModuleVersion     = '1.0.0'
+    ModuleVersion     = '1.1.1'
     GUID              = 'c298c5e0-4dde-4257-ba2c-358fc7e30e4c'
     Author            = 'Storcale'
     CompanyName       = 'Overbeaver'
@@ -16,7 +16,7 @@
             LicenseUri = 'https://opensource.org/license/lgpl-2-0/'
         }
     }
-    FunctionsToExport = 'login'
+    FunctionsToExport = 'login,gitLogin,beaverOS'
     AliasesToExport   = @()
     VariablesToExport = @()
     CmdletsToExport   = @()
