@@ -1,7 +1,7 @@
 # beaverOS
 
 ## How to run: 
-Make sure to have script execution policy enabler
+Make sure to have script execution policy enabled
 Launch scripts/boot.ps1 
 
 ### Components: 
