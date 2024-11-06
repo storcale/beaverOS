@@ -1,76 +1,100 @@
 
 Add-Type -AssemblyName System.Windows.Forms
+Add-Type -AssemblyName System.Drawing
+$projectRoot = (Get-Item -Path $PSScriptRoot).Parent.FullName
+$module_path = Join-Path -Path $projectRoot -ChildPath "Modules\updater.psm1"
+Import-Module -Name $module_path -Force
 
-$taskNumber = 3
-function finishTask{
-    $taskDone += 1
-    $progressBar.Value = ($taskDone / $taskNumber ) * 100
-    $progressPercent = ($taskDone / $taskNumber) * 100
-    $progressLabel.Text = "$progressPercent% of Update complete"
+function uninstall(){
+	$old_profile_file = Join-Path -Path $projectRoot -ChildPath "Data\old_profile.txt"
+    Copy-Item $old_profile_file -Destination $PROFILE
+    Write-Host "Sucessfully removed beaverOS_external and mounted previous profile." -ForegroundColor Green
 }
-function update(){
- $progressForm = New-Object System.Windows.Forms.Form
- $progressForm.Width = 300
- $progressForm.Height = 150
- $progressForm.FormBorderStyle = [System.Windows.Forms.FormBorderStyle]::FixedSingle
- $progressForm.Text = "Updating beaverOS..."
+function install(){
+ Write-Host "Importing beaverOS.. " -ForegroundColor Blue 
+ if(-Not (Test-Path -Path $PROFILE)){
+    $profileDir = Split-Path -Path $PROFILE
+    if(-Not (Test-Path -Path $profileDir)){
+        New-Item -Path $profileDir -ItemType Directory -Force
+    }
+    New-Item -Path $profileDir -ItemType File -Force
+    Write-Host "Profile script created at $PROFILE" -ForegroundColor Green 
+ }else{
+    Write-Host "Profile script already exists at $PROFILE"  -ForegroundColor Yellow
+ }
  
- $progressBar = New-Object System.Windows.Forms.ProgressBar
- $progressBar.Location = New-Object System.Drawing.Point(10, 50)
- $progressBar.Size = New-Object System.Drawing.Size(280, 20)
- $progressForm.Controls.Add($progressBar)
- 
- $progressLabel = New-Object System.Windows.Forms.Label
- $progressLabel.Location = New-Object System.Drawing.Point(10, 20)
- $progressLabel.Size = New-Object System.Drawing.Size(280, 20)
- $progressLabel.Text = "Update 0% Complete"
- $progressLabel.TextAlign = [System.Drawing.ContentAlignment]::MiddleCenter
- $progressForm.Controls.Add($progressLabel)
- 
+ Write-Host "Current profile path: " .. $PROFILE -ForegroundColor Blue
+ $profile_file = Join-Path -Path $projectRoot -ChildPath "Scripts\beaverOS_profile.ps1"
 
- $progressForm.Show()
+ $old_profile_file = Join-Path -Path $projectRoot -ChildPath "Data\old_profile.txt"
+ # Backup profile
+ $old_profile_content = Get-Content -Path $PROFILE
+ Clear-Content -Path $old_profile_file
+ Add-Content -Path $old_profile_file -Value $old_profile_content
 
- Write-Host "Starting update..."
+ # Ovverride profile
+ Copy-Item $profile_file -destination $PROFILE
 
- # Total number of tasks
- 
- 
- 
-  $progressBar.Value = 5
-  $progressLabel.Text = "5% of Update complete"
+ Write-Host "Imported beaverOS. Open new powershell window to start." -ForegroundColor Green 
+ Write-Host "To reset profile launch reset.ps1 " -ForegroundColor Yellow
+ Write-Host "Current profile path: " .. $PROFILE -ForegroundColor Blue
 
-
- # Get latest update 
- $response = Invoke-WebRequest -Uri "https://script.google.com/macros/s/AKfycbxy9HrmwZLTrTOp1-ZPVj66Bx6X7is0YIJzp_tmj1yoJAP-C921csYBZyr3OXW_AyY/exec?query=update"
- $update_code = $response.Content
- Write-Host "Latest update content fetched"
- finishTask
-
- # Backup file
- Write-Host "Saving backup..."
-
- $projectRoot = (Get-Item -Path $PSScriptRoot).Parent.FullName
- $module_path = Join-Path -Path $projectRoot -ChildPath "Modules\beaverOS_external.psm1"
- 
- $backup_file = Join-Path -Path $projectRoot -ChildPath "Data\backup.txt"
- $content = Get-Content $module_path
- Clear-Content -Path $backup_file
- Add-Content -Path $backup_file -Value $content
- finishTask
-
- # Push update
- Write-Host "Pushing update to file..."
- Clear-Content $module_path
- Add-Content -Path $module_path -Value $update_code
- finishTask
-
-  Write-Host "Sucessfully updated beaverOS_external!" -ForegroundColor Green
-  
-
-
-
- # Close the loading GUI
- $progressForm.Close()
 }
 
-Export-ModuleMember -Function update
+function welcomeGUI {
+
+    # Create new form
+    $form = New-Object System.Windows.Forms.Form
+    $form.Text = 'beaverOS_external Manager'
+    $form.Size = New-Object System.Drawing.size(500,300)
+    $form.StartPosition = 'CenterScreen'
+    
+
+    # Title
+    $title_label = New-Object System.Windows.Forms.Label
+    $title_label.Location = New-Object System.Drawing.Point(150,10)
+    $title_label.Size = New-Object System.Drawing.Size(250,20)
+    $title_label.Font =  New-Object System.Drawing.Font("Calibri Light",15)
+    $title_label.Text = 'Please select an action:'
+    $form.Controls.Add($title_label)
+    
+    # Install button
+    $InstallButton = New-Object System.Windows.Forms.Button
+    $InstallButton.Location = New-Object System.Drawing.Point(20,50)
+    $InstallButton.Size = New-Object System.Drawing.Size(100,50)
+    $InstallButton.Text = 'Install'
+    $InstallButton.BackColor = "green"
+    $InstallButton.Add_Click{
+        install
+    }
+    $form.AcceptButton = $InstallButton
+    $form.Controls.Add($InstallButton)
+
+    # Uninstall button
+    $DeleteButton = New-Object System.Windows.Forms.Button
+    $DeleteButton.Location = New-Object System.Drawing.Point(20,110)
+    $DeleteButton.Size = New-Object System.Drawing.Size(100,50)
+    $DeleteButton.Text = 'Uninstall'
+    $DeleteButton.BackColor = "red"
+    $form.AcceptButton = $DeleteButton
+    $form.Controls.Add($DeleteButton)
+    $DeleteButton.Add_Click{
+        uninstall
+    }
+
+    # Update button
+    $UpdateButton = New-Object System.Windows.Forms.Button
+    $UpdateButton.Location = New-Object System.Drawing.Point(20,170)
+    $UpdateButton.Size = New-Object System.Drawing.Size(100,50)
+    $UpdateButton.Text = 'Update'
+    $UpdateButton.BackColor = "gray"
+    $form.AcceptButton = $UpdateButton
+    $form.Controls.Add($UpdateButton)
+    $UpdateButton.Add_Click{
+        update
+    }
+
+    $form.ShowDialog()
+}
+
+Export-ModuleMember -Function welcomeGUI
