@@ -5,4 +5,3 @@ $old_profile_file = Join-Path -Path $projectRoot -ChildPath "Data\old_profile.tx
 
 Copy-Item $old_profile_file -Destination $PROFILE
 Write-Host "Sucessfully removed beaverOS_external and mounted previous profile." -ForegroundColor Green
-
