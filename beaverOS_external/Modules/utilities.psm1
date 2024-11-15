@@ -19,13 +19,13 @@ function utilities{
 function checkWeather{
     [CmdletBinding()]
     param(
-        [Parameter(Position = 0, Mandatory = $false)]
+        [Parameter(Position = 0, Mandatory = $True)]
         [Alias("my-location")]
         [string]$location
     )
     process {
         try {
-            $Weather = curl "https://wttr.in/longford"
+            $Weather = curl "https://wttr.in/$location"
             Write-Host $weather.content
         } catch {
             Write-Host "⚠️ Error in line $($_.InvocationInfo.ScriptLineNumber): $($Error[0])"
