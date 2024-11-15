@@ -34,6 +34,18 @@ function checkWeather{
     }
 }
 
+function speedtest {
+  [CmdletBinding()]
+  param()
+process {
+try {
+curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python -
+} catch {
+Write-Host "⚠️ Error in line $($_.InvocationInfo.ScriptLineNumber): $($Error[0])"
+}
+}
+}
+
 
 function locateIP {
     [CmdletBinding()]
@@ -90,4 +102,4 @@ function listPrints {
 }
 
 
-Export-ModuleMember -Function checkWeather,listWeather,locateIP,listPrints,utilities
+Export-ModuleMember -Function checkWeather,listWeather,locateIP,listPrints,utilities,speedtest
