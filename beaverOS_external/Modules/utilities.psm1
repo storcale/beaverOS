@@ -1,7 +1,7 @@
 Import-Module Microsoft.PowerShell.Management
 Write-Host "Importing utilities..." -ForegroundColor Green
 
-$commands = 'checkWeather','listWeather','locateIP','listPrints','utilities'
+$commands = 'checkWeather','listWeather','locateIP','listPrints','utilities',"speedtest"
 
 function utilities{
     [CmdletBinding()]
