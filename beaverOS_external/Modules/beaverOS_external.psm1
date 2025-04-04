@@ -1,5 +1,5 @@
 Import-Module Microsoft.PowerShell.Management
-
+Write-Host "Importing beaverOS..." -ForegroundColor Yellow
 # Password input UI
 function InputBox([string]$profile_type){
     Add-Type -AssemblyName System.Windows.Forms
@@ -107,10 +107,10 @@ function gitLogin {
     process {
         $username = Read-Host "Enter Username"
         $password_secure = Read-Host "Enter Password" -AsSecureString
+	$ifChrome = Read-Host "Chrome? enter/n"
         $bstr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($password_secure);  
         
-
-        Start-Process "https://github.com/login"
+	if ($ifChrome) {Start-Process "https://github.com/login"} else {Start "C:\Program Files\Google\Chrome\Application\chrome.exe" '--start-fullscreen "http://www.github.com/login"'}
         Start-Sleep -Seconds 1
 
         function Send-Keys {
