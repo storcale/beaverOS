@@ -1,7 +1,7 @@
 Import-Module Microsoft.PowerShell.Management
-Write-Host "Importing utilities..." -ForegroundColor Green
+Write-Host "Importing utilities..." -ForegroundColor Yellow
 
-$commands = 'checkWeather','listWeather','locateIP','listPrints','utilities',"speedtest"
+$commands = 'checkWeather','locateIP','listPrints','utilities'
 
 function utilities{
     [CmdletBinding()]
@@ -19,31 +19,19 @@ function utilities{
 function checkWeather{
     [CmdletBinding()]
     param(
-        [Parameter(Position = 0, Mandatory = $True)]
+        [Parameter(Position = 0, Mandatory = $false)]
         [Alias("my-location")]
         [string]$location
     )
     process {
         try {
-            $Weather = curl "https://wttr.in/$location"
+            $Weather = curl "https://wttr.in/longford"
             Write-Host $weather.content
         } catch {
             Write-Host "⚠️ Error in line $($_.InvocationInfo.ScriptLineNumber): $($Error[0])"
             Write-Host "Command failed" -ForegroundColor Red
         }
     }
-}
-
-function speedtest {
-  [CmdletBinding()]
-  param()
-process {
-try {
-curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python -
-} catch {
-Write-Host "⚠️ Error in line $($_.InvocationInfo.ScriptLineNumber): $($Error[0])"
-}
-}
 }
 
 
@@ -102,4 +90,4 @@ function listPrints {
 }
 
 
-Export-ModuleMember -Function checkWeather,listWeather,locateIP,listPrints,utilities,speedtest
+Export-ModuleMember -Function checkWeather,listWeather,locateIP,listPrints,utilities
