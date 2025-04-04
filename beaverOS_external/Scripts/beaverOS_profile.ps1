@@ -1,8 +1,9 @@
-$projectRoot = (Get-Item -Path $PSScriptRoot).Parent.FullName
-$module_path = Join-Path -Path $projectRoot -ChildPath "Modules\beaverOS_external.psm1"
-Import-Module -Force $module_path
-$utilities_path = Join-Path -Path $projectRoot -ChildPath "Modules\utilities.psm1"
-Import-Module -Force $utilities_path
+$module_path = "C:\Users\21GFrette-ChambaudTC\OneDrive - Longford and Westmeath Education and Training Board\BOS\beaverOS_external\Modules\beaverOS_external.psm1"
+$executionTime = Measure-Command { Import-Module -Force $module_path }
+Write-Host "Imported beaverOS in $($executionTime.TotalMilliseconds) ms" -ForegroundColor Gree
+$utilities_path = "C:\Users\21GFrette-ChambaudTC\OneDrive - Longford and Westmeath Education and Training Board\BOS\beaverOS_external\Modules\utilities.psm1"
+$executionTime = Measure-Command { Import-Module -Force $utilities_path }
+Write-Host "Imported utilities in $($executionTime.TotalMilliseconds) ms" -ForegroundColor Green
 
 Write-Host @"
  ________  _______   ________  ___      ___ _______   ________          ________  ________      
@@ -16,6 +17,4 @@ Write-Host @"
                                                                                                 
 "@ -ForegroundColor Yellow
 
-Write-Host("Welcome to Powershell! BeaverOS_external installed") -ForegroundColor Green
-
-
+Write-Host "Welcome to Powershell! BeaverOS_external installed" -ForegroundColor Green
